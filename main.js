@@ -17,7 +17,7 @@ let lifeLineUsed = {
 const readline = require("readline");
 const fs = require("fs");
 
-////////////////////////// Create an Interface //////////////////////////
+////////////////////////// Create Interface //////////////////////////
 const gameInterface = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
@@ -33,8 +33,12 @@ function loadScores() {
 ////////////////////////// Load Question Bank //////////////////////////
 let questions = [];
 fs.readFile("questions.json", "utf8", function (err, data) {
-  questions = JSON.parse(data);
-  displayMenu();
+  if (err) {
+    console.log("Error reading file questions.json");
+  } else {
+    questions = JSON.parse(data);
+    displayMenu();
+  }
 });
 
 ////////////////////////// Display Main Menu //////////////////////////
@@ -163,7 +167,7 @@ function playGame() {
   askName();
 }
 
-////////////////////////// Save Scores to scores.json //////////////////////////
+////////////////////////// Save Scores //////////////////////////
 function saveScores(name, score) {
   const scores = loadScores();
   scores.push({ name: name, score: score });
@@ -171,7 +175,7 @@ function saveScores(name, score) {
   scores.sort((a, b) => b.score - a.score);
   // Isolate the top 5
   const highScores = scores.slice(0, 5);
-  // Save the scores to scores.json
+  // Save the scores
   fs.writeFile(
     "scores.json",
     JSON.stringify({ scores: highScores }, null, 2),
